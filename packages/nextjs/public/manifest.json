@@ -1,0 +1,54 @@
+{
+    "name": "Bidnox - Decentralized Auction Platform",
+    "short_name": "Bidnox",
+    "description": "Create and participate in sealed-bid auctions on Starknet",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#111827",
+    "theme_color": "#111827",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/logo-app.png",
+            "sizes": "64x64",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/logo-app.png",
+            "sizes": "128x128",
+            "type": "image/png",
+            "purpose": "any maskable"
+        },
+        {
+            "src": "/logo-app.png",
+            "sizes": "256x256",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ],
+    "categories": ["web3", "blockchain", "starknet"],
+    "screenshots": [
+        {
+            "src": "/screenshots/home.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "platform": "wide",
+            "label": "Home screen of Scaffold Stark"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Auctions",
+            "url": "/auction",
+            "description": "Browse all auctions"
+        },
+        {
+            "name": "Create Auction",
+            "url": "/auction/create",
+            "description": "Create a new auction"
+        }
+    ],
+    "prefer_related_applications": false,
+    "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7"
+}
