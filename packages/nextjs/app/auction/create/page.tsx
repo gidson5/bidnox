@@ -11,6 +11,9 @@ import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { notification } from "~~/utils/scaffold-stark";
 
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+
 interface AuctionFormData {
     assetId: string;
     startingPrice: string;
@@ -28,9 +31,8 @@ export default function CreateAuctionPage() {
 
     const { address: connectedAddress, status } = useAccount();
     const { createAuction } = useCreateAuction();
-    const { data: deployedContract } = useDeployedContractInfo({
-        contractName: "AuctionPlatform",
-    });
+    const { data: deployedContract } =
+        useDeployedContractInfo("AuctionPlatform");
     const { targetNetwork } = useTargetNetwork();
 
     const handleInputChange = (field: keyof AuctionFormData, value: string) => {

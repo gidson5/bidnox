@@ -2,8 +2,22 @@
  * Helper functions for auction data formatting and validation
  */
 
-export const formatStrkAmount = (amount: bigint): string => {
-    const strk = Number(amount) / 1e18;
+// Convert u256 {low, high} to BigInt
+export const u256ToBigInt = (u256: any): bigint => {
+    if (typeof u256 === "bigint") return u256;
+    if (typeof u256 === "string") return BigInt(u256);
+    if (typeof u256 === "number") return BigInt(u256);
+    if (u256 && typeof u256 === "object" && "low" in u256) {
+        const low = BigInt(u256.low || 0);
+        const high = BigInt(u256.high || 0);
+        return (high << 128n) + low;
+    }
+    return 0n;
+};
+
+export const formatStrkAmount = (amount: any): string => {
+    const bigIntAmount = u256ToBigInt(amount);
+    const strk = Number(bigIntAmount) / 1e18;
     return strk.toLocaleString(undefined, {
         minimumFractionDigits: 0,
         maximumFractionDigits: 4,

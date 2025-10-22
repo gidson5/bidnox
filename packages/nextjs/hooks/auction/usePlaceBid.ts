@@ -2,7 +2,7 @@
  * Hook to place a sealed bid
  */
 
-import { useScaffoldReadContract } from "~~/hooks/scaffold-stark/useScaffoldReadContract";
+import { useScaffoldContract } from "~~/hooks/scaffold-stark/useScaffoldContract";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-stark/useScaffoldWriteContract";
 import { storeBidSecret } from "~~/utils/auction/bidHashing";
 
@@ -13,11 +13,9 @@ export const usePlaceBid = (auctionId: bigint) => {
         args: [BigInt(0), BigInt(0)], // Placeholder args
     });
 
-    // Helper to compute bid hash
-    const computeBidHashRead = useScaffoldReadContract({
+    // Get contract instance to compute bid hash dynamically
+    const { data: contract } = useScaffoldContract({
         contractName: "AuctionPlatform",
-        functionName: "compute_bid_hash",
-        args: [BigInt(0), ""], // Placeholder args
     });
 
     const placeBid = async (
@@ -26,10 +24,15 @@ export const usePlaceBid = (auctionId: bigint) => {
         userAddress: string
     ) => {
         try {
+            if (!contract) {
+                throw new Error("Contract not loaded");
+            }
+
             // Compute bid hash using contract function
-            const { data: bidHash } = await computeBidHashRead.refetch({
-                args: [amount, secret],
-            });
+            const bidHash = await contract.call("compute_bid_hash", [
+                amount,
+                secret,
+            ]);
 
             if (!bidHash) {
                 throw new Error("Failed to compute bid hash");

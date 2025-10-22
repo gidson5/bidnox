@@ -80,11 +80,59 @@ export const useAuctionList = (filter: AuctionFilter = "all") => {
                 for (let i = 1; i <= countNumber; i++) {
                     try {
                         console.log(`  → Fetching auction #${i}...`);
-                        const auction = await contract.call("get_auction", [
+                        const rawAuction = await contract.call("get_auction", [
                             BigInt(i),
                         ]);
-                        console.log(`  ✅ Auction #${i}:`, auction);
-                        fetchedAuctions.push(auction);
+                        console.log(`  ✅ Auction #${i} (raw):`, rawAuction);
+
+                        // Parse raw array response into structured object
+                        // u256 fields are split into [low, high] pairs
+                        // Array indices: [0-1: auction_id, 2: seller, 3-4: asset_id,
+                        // 5-6: starting_price, 7: start_time, 8: duration, 9: end_time,
+                        // 10-11: highest_bid, 12: highest_bidder, 13: finalized, 14: cancelled]
+                        let parsedAuction;
+                        if (
+                            Array.isArray(rawAuction) &&
+                            rawAuction.length === 15
+                        ) {
+                            parsedAuction = {
+                                auction_id: {
+                                    low: rawAuction[0],
+                                    high: rawAuction[1],
+                                },
+                                seller: rawAuction[2],
+                                asset_id: {
+                                    low: rawAuction[3],
+                                    high: rawAuction[4],
+                                },
+                                starting_price: {
+                                    low: rawAuction[5],
+                                    high: rawAuction[6],
+                                },
+                                start_time: BigInt(rawAuction[7]),
+                                duration: BigInt(rawAuction[8]),
+                                end_time: BigInt(rawAuction[9]),
+                                highest_bid: {
+                                    low: rawAuction[10],
+                                    high: rawAuction[11],
+                                },
+                                highest_bidder: rawAuction[12],
+                                finalized:
+                                    rawAuction[13] !== "0x0" &&
+                                    rawAuction[13] !== 0,
+                                cancelled:
+                                    rawAuction[14] !== "0x0" &&
+                                    rawAuction[14] !== 0,
+                            };
+                        } else {
+                            parsedAuction = rawAuction;
+                        }
+
+                        console.log(
+                            `  ✅ Auction #${i} (parsed):`,
+                            parsedAuction
+                        );
+                        fetchedAuctions.push(parsedAuction);
                     } catch (error) {
                         console.error(
                             `  ❌ Failed to fetch auction #${i}:`,

@@ -77,15 +77,11 @@ export const useScaffoldContract = <TContractName extends ContractName>({
             console.log("[useScaffoldContract] Creating contract instance...");
 
             // Create contract instance
-            const contractInstance = new Contract(
-                mutableAbi,
-                deployedContractData.address,
-                publicClient
-            );
-
-            if (account) {
-                contractInstance.connect(account);
-            }
+            const contractInstance = new Contract({
+                abi: mutableAbi,
+                address: deployedContractData.address,
+                providerOrAccount: account || publicClient,
+            });
 
             const originalCall = contractInstance.call.bind(contractInstance);
             contractInstance.call = async (method: string, ...args: any[]) => {

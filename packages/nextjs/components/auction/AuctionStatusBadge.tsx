@@ -2,7 +2,7 @@
  * Component to display auction status as a colored badge
  */
 
-import { getStatusColor, getStatusText } from "~~/utils/auction";
+"use client";
 
 type AuctionStatus = "active" | "ended" | "finalized" | "cancelled";
 
