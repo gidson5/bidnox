@@ -200,28 +200,6 @@ export default function CreateAuctionPage() {
 
     return (
         <div className="min-h-screen bg-gray-900">
-            {/* Header */}
-            <header className="bg-gray-900 border-b border-gray-800 px-6 py-4">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="relative w-8 h-8">
-                                <Image
-                                    src="/logo-app.png"
-                                    alt="Bidnox Logo"
-                                    fill
-                                    className="object-contain"
-                                />
-                            </div>
-                            <span className="text-white text-xl font-semibold">
-                                Bidnox
-                            </span>
-                        </Link>
-                    </div>
-                    <CustomConnectButton />
-                </div>
-            </header>
-
             <div className="container mx-auto px-6 py-8 max-w-2xl">
                 {/* Page Header */}
                 <div className="mb-8">

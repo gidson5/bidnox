@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
-import { CustomConnectButton } from "~~/components/scaffold-stark";
 import { useAuctionList } from "~~/hooks/auction";
 import {
     formatStrkAmount,
@@ -28,36 +26,6 @@ export default function AuctionPage() {
 
     return (
         <div className="min-h-screen bg-gray-900">
-            {/* Header */}
-            <header className="bg-gray-900 border-b border-gray-800 px-6 py-4">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="relative w-8 h-8">
-                                <Image
-                                    src="/logo-app.png"
-                                    alt="Bidnox Logo"
-                                    fill
-                                    className="object-contain"
-                                />
-                            </div>
-                            <span className="text-white text-xl font-semibold">
-                                Bidnox
-                            </span>
-                        </Link>
-                    </div>
-                    <div className="flex items-center space-x-4">
-                        <Link
-                            href="/auction/create"
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                        >
-                            Create Auction
-                        </Link>
-                        <CustomConnectButton />
-                    </div>
-                </div>
-            </header>
-
             <div className="container mx-auto px-6 py-8">
                 {/* Page Header */}
                 <div className="mb-8">

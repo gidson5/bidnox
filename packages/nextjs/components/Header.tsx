@@ -49,6 +49,7 @@ export const HeaderMenuLinks = () => {
     useEffect(() => {
         setIsDark(theme === "dark");
     }, [theme]);
+
     return (
         <>
             {menuLinks.map(({ label, href, icon }) => {
@@ -57,15 +58,14 @@ export const HeaderMenuLinks = () => {
                     <li key={href}>
                         <Link
                             href={href}
-                            passHref
                             className={`${
                                 isActive
-                                    ? "bg-gradient-nav text-white! active:bg-gradient-nav shadow-md"
-                                    : ""
-                            } py-1.5 px-3 text-sm rounded-full gap-2 grid grid-flow-col hover:bg-gradient-nav hover:text-white`}
+                                    ? "bg-primary text-primary-content"
+                                    : "hover:bg-base-200"
+                            } flex items-center gap-2 px-3 py-2 rounded-lg transition-colors`}
                         >
                             {icon}
-                            <span>{label}</span>
+                            <span className="text-sm font-medium">{label}</span>
                         </Link>
                     </li>
                 );
@@ -125,73 +125,59 @@ export const Header = () => {
     ]);
 
     return (
-        <div className=" lg:static top-0 navbar min-h-0 shrink-0 justify-between z-20 px-0 sm:px-2">
-            <div className="navbar-start w-auto lg:w-1/2 -mr-2">
-                <div className="lg:hidden dropdown" ref={burgerMenuRef}>
+        <div className="navbar bg-base-100 shadow-sm border-b border-base-300">
+            <div className="navbar-start">
+                {/* Mobile menu button */}
+                <div className="dropdown lg:hidden" ref={burgerMenuRef}>
                     <label
                         tabIndex={0}
-                        className={`ml-1 btn btn-ghost 
-              [@media(max-width:379px)]:px-3! [@media(max-width:379px)]:py-1! 
-              [@media(max-width:379px)]:h-9! [@media(max-width:379px)]:min-h-0!
-              [@media(max-width:379px)]:w-10!
-              ${isDrawerOpen ? "hover:bg-secondary" : "hover:bg-transparent"}`}
-                        onClick={() => {
-                            setIsDrawerOpen(
-                                (prevIsOpenState) => !prevIsOpenState
-                            );
-                        }}
+                        className="btn btn-ghost btn-square"
+                        onClick={() => setIsDrawerOpen(!isDrawerOpen)}
                     >
-                        <Bars3Icon className="h-1/2" />
+                        <Bars3Icon className="h-6 w-6" />
                     </label>
                     {isDrawerOpen && (
                         <ul
                             tabIndex={0}
-                            className="menu menu-compact dropdown-content mt-3 p-2 shadow-sm rounded-box w-52 bg-base-100"
-                            onClick={() => {
-                                setIsDrawerOpen(false);
-                            }}
+                            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                            onClick={() => setIsDrawerOpen(false)}
                         >
                             <HeaderMenuLinks />
                         </ul>
                     )}
                 </div>
-                <Link
-                    href="/"
-                    passHref
-                    className="hidden lg:flex items-center gap-2 ml-4 mr-6 shrink-0"
-                >
-                    <div className="flex relative w-10 h-10">
-                        <Image
-                            alt="Bidnox logo"
-                            className="cursor-pointer"
-                            fill
-                            src="/logo-app.png"
-                        />
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-bold leading-tight">
-                            Bidnox Auctions
+
+                {/* Logo - visible on all screen sizes */}
+                <Link href="/" className="btn btn-ghost normal-case text-xl">
+                    <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8">
+                            <Image
+                                alt="Bidnox logo"
+                                className="cursor-pointer"
+                                fill
+                                src="/logo-app.png"
+                            />
+                        </div>
+                        <span className="hidden sm:block font-bold">
+                            Bidnox
                         </span>
-                        <span className="text-xs">Sealed-Bid Platform</span>
                     </div>
                 </Link>
-                <ul className="hidden lg:flex lg:flex-nowrap menu menu-horizontal px-1 gap-2">
+
+                {/* Desktop menu */}
+                <ul className="hidden lg:flex menu menu-horizontal px-1 gap-1">
                     <HeaderMenuLinks />
                 </ul>
             </div>
-            <div className="navbar-end grow mr-2 gap-4">
-                {status === "connected" && !isDeployed ? (
-                    <span className="bg-[#8a45fc] text-[9px] p-1 text-white">
+
+            <div className="navbar-end gap-2">
+                {status === "connected" && !isDeployed && (
+                    <span className="badge badge-warning badge-sm">
                         Wallet Not Deployed
                     </span>
-                ) : null}
+                )}
                 <CustomConnectButton />
-                {/* <FaucetButton /> */}
-                <SwitchTheme
-                    className={`pointer-events-auto ${
-                        isLocalNetwork ? "mb-1 lg:mb-0" : ""
-                    }`}
-                />
+                <SwitchTheme className="btn btn-ghost btn-square" />
             </div>
         </div>
     );

@@ -37,31 +37,6 @@ export default function AuctionDetailPage() {
     if (!auctionData) {
         return (
             <div className="min-h-screen bg-gray-900">
-                {/* Header */}
-                <header className="bg-gray-900 border-b border-gray-800 px-6 py-4">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center space-x-2">
-                            <Link
-                                href="/"
-                                className="flex items-center space-x-2"
-                            >
-                                <div className="relative w-8 h-8">
-                                    <Image
-                                        src="/logo-app.png"
-                                        alt="Bidnox Logo"
-                                        fill
-                                        className="object-contain"
-                                    />
-                                </div>
-                                <span className="text-white text-xl font-semibold">
-                                    Bidnox
-                                </span>
-                            </Link>
-                        </div>
-                        <CustomConnectButton />
-                    </div>
-                </header>
-
                 <div className="container mx-auto px-6 py-8 text-center">
                     <div className="text-6xl mb-4">❌</div>
                     <h1 className="text-3xl font-bold text-white mb-4">
@@ -109,25 +84,6 @@ export default function AuctionDetailPage() {
 
     return (
         <div className="min-h-screen bg-gray-900">
-            {/* Header */}
-            <header className="bg-gray-900 border-b border-gray-800 px-6 py-4">
-                <div className="flex justify-between items-center">
-                    <div className="flex items-center space-x-2">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-red-500 rounded-sm flex items-center justify-center">
-                                <span className="text-white font-bold text-sm">
-                                    /
-                                </span>
-                            </div>
-                            <span className="text-white text-xl font-semibold">
-                                Bidnox
-                            </span>
-                        </Link>
-                    </div>
-                    <CustomConnectButton />
-                </div>
-            </header>
-
             <div className="container mx-auto px-6 py-8 max-w-4xl">
                 {/* Back Button */}
                 <Link
