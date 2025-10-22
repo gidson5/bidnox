@@ -46,6 +46,7 @@ import { green } from "./helpers/colorize-log";
  */
 const deployScript = async (): Promise<void> => {
     // Deploy the AuctionPlatform contract (no constructor args needed)
+    // The tip is automatically set higher for Sepolia in deploy-contract.ts
     await deployContract({
         contract: "AuctionPlatform",
         constructorArgs: {},

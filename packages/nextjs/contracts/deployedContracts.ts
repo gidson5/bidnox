@@ -4,729 +4,910 @@
  */
 
 const deployedContracts = {
-  devnet: {
-    AuctionPlatform: {
-      address:
-        "0x1467f3f3ad6bde4c5a3db21f15ee6e3bf7e5c00b7c336ccb9c4b6be6936d05f",
-      abi: [
-        {
-          type: "impl",
-          name: "AuctionPlatformImpl",
-          interface_name: "contracts::auction_platform::IAuctionPlatform",
+    devnet: {
+        AuctionPlatform: {
+            address:
+                "0x1467f3f3ad6bde4c5a3db21f15ee6e3bf7e5c00b7c336ccb9c4b6be6936d05f",
+            abi: [
+                {
+                    type: "impl",
+                    name: "AuctionPlatformImpl",
+                    interface_name:
+                        "contracts::auction_platform::IAuctionPlatform",
+                },
+                {
+                    type: "struct",
+                    name: "core::integer::u256",
+                    members: [
+                        {
+                            name: "low",
+                            type: "core::integer::u128",
+                        },
+                        {
+                            name: "high",
+                            type: "core::integer::u128",
+                        },
+                    ],
+                },
+                {
+                    type: "enum",
+                    name: "core::bool",
+                    variants: [
+                        {
+                            name: "False",
+                            type: "()",
+                        },
+                        {
+                            name: "True",
+                            type: "()",
+                        },
+                    ],
+                },
+                {
+                    type: "struct",
+                    name: "contracts::auction_platform::Auction",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "seller",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "asset_id",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "starting_price",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "start_time",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "duration",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "end_time",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "highest_bid",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "highest_bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "finalized",
+                            type: "core::bool",
+                        },
+                        {
+                            name: "cancelled",
+                            type: "core::bool",
+                        },
+                    ],
+                },
+                {
+                    type: "struct",
+                    name: "contracts::auction_platform::Bid",
+                    members: [
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "bid_hash",
+                            type: "core::felt252",
+                        },
+                        {
+                            name: "revealed",
+                            type: "core::bool",
+                        },
+                        {
+                            name: "actual_amount",
+                            type: "core::integer::u256",
+                        },
+                    ],
+                },
+                {
+                    type: "interface",
+                    name: "contracts::auction_platform::IAuctionPlatform",
+                    items: [
+                        {
+                            type: "function",
+                            name: "create_auction",
+                            inputs: [
+                                {
+                                    name: "asset_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "starting_price",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "duration",
+                                    type: "core::integer::u64",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "place_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "bid_hash",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "reveal_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "actual_amount",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "secret",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "finalize_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "cancel_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "get_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "contracts::auction_platform::Auction",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "get_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "bidder",
+                                    type: "core::starknet::contract_address::ContractAddress",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "contracts::auction_platform::Bid",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "is_auction_active",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::bool",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "is_auction_ended",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::bool",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "get_auction_count",
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "compute_bid_hash",
+                            inputs: [
+                                {
+                                    name: "amount",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "secret",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::felt252",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                    ],
+                },
+                {
+                    type: "constructor",
+                    name: "constructor",
+                    inputs: [],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "seller",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "data",
+                        },
+                        {
+                            name: "asset_id",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                        {
+                            name: "starting_price",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                        {
+                            name: "end_time",
+                            type: "core::integer::u64",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::BidPlaced",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "key",
+                        },
+                        {
+                            name: "bid_hash",
+                            type: "core::felt252",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::BidRevealed",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "key",
+                        },
+                        {
+                            name: "actual_amount",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "winner",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "data",
+                        },
+                        {
+                            name: "winning_bid",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::Event",
+                    kind: "enum",
+                    variants: [
+                        {
+                            name: "AuctionCreated",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
+                            kind: "nested",
+                        },
+                        {
+                            name: "BidPlaced",
+                            type: "contracts::auction_platform::AuctionPlatform::BidPlaced",
+                            kind: "nested",
+                        },
+                        {
+                            name: "BidRevealed",
+                            type: "contracts::auction_platform::AuctionPlatform::BidRevealed",
+                            kind: "nested",
+                        },
+                        {
+                            name: "AuctionFinalized",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
+                            kind: "nested",
+                        },
+                        {
+                            name: "AuctionCancelled",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
+                            kind: "nested",
+                        },
+                    ],
+                },
+            ],
+            classHash:
+                "0x106f4fd93ab8b2a6f1bfbdf06c3d3e8e6f971cfb826bd6daa46b9447060b1c",
         },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "contracts::auction_platform::Auction",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-            },
-            {
-              name: "seller",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "asset_id",
-              type: "core::integer::u256",
-            },
-            {
-              name: "starting_price",
-              type: "core::integer::u256",
-            },
-            {
-              name: "start_time",
-              type: "core::integer::u64",
-            },
-            {
-              name: "duration",
-              type: "core::integer::u64",
-            },
-            {
-              name: "end_time",
-              type: "core::integer::u64",
-            },
-            {
-              name: "highest_bid",
-              type: "core::integer::u256",
-            },
-            {
-              name: "highest_bidder",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "finalized",
-              type: "core::bool",
-            },
-            {
-              name: "cancelled",
-              type: "core::bool",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "contracts::auction_platform::Bid",
-          members: [
-            {
-              name: "bidder",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-            {
-              name: "bid_hash",
-              type: "core::felt252",
-            },
-            {
-              name: "revealed",
-              type: "core::bool",
-            },
-            {
-              name: "actual_amount",
-              type: "core::integer::u256",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "contracts::auction_platform::IAuctionPlatform",
-          items: [
-            {
-              type: "function",
-              name: "create_auction",
-              inputs: [
-                {
-                  name: "asset_id",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "starting_price",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "duration",
-                  type: "core::integer::u64",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "place_bid",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "bid_hash",
-                  type: "core::felt252",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "reveal_bid",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "actual_amount",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "secret",
-                  type: "core::felt252",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "finalize_auction",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "cancel_auction",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "get_auction",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [
-                {
-                  type: "contracts::auction_platform::Auction",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_bid",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "bidder",
-                  type: "core::starknet::contract_address::ContractAddress",
-                },
-              ],
-              outputs: [
-                {
-                  type: "contracts::auction_platform::Bid",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "is_auction_active",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::bool",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "is_auction_ended",
-              inputs: [
-                {
-                  name: "auction_id",
-                  type: "core::integer::u256",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::bool",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "get_auction_count",
-              inputs: [],
-              outputs: [
-                {
-                  type: "core::integer::u256",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "compute_bid_hash",
-              inputs: [
-                {
-                  name: "amount",
-                  type: "core::integer::u256",
-                },
-                {
-                  name: "secret",
-                  type: "core::felt252",
-                },
-              ],
-              outputs: [
-                {
-                  type: "core::felt252",
-                },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
-          kind: "struct",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-              kind: "key",
-            },
-            {
-              name: "seller",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
-            },
-            {
-              name: "asset_id",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-            {
-              name: "starting_price",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-            {
-              name: "end_time",
-              type: "core::integer::u64",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::BidPlaced",
-          kind: "struct",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-              kind: "key",
-            },
-            {
-              name: "bidder",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "bid_hash",
-              type: "core::felt252",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::BidRevealed",
-          kind: "struct",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-              kind: "key",
-            },
-            {
-              name: "bidder",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "actual_amount",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
-          kind: "struct",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-              kind: "key",
-            },
-            {
-              name: "winner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "data",
-            },
-            {
-              name: "winning_bid",
-              type: "core::integer::u256",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
-          kind: "struct",
-          members: [
-            {
-              name: "auction_id",
-              type: "core::integer::u256",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::auction_platform::AuctionPlatform::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "AuctionCreated",
-              type: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
-              kind: "nested",
-            },
-            {
-              name: "BidPlaced",
-              type: "contracts::auction_platform::AuctionPlatform::BidPlaced",
-              kind: "nested",
-            },
-            {
-              name: "BidRevealed",
-              type: "contracts::auction_platform::AuctionPlatform::BidRevealed",
-              kind: "nested",
-            },
-            {
-              name: "AuctionFinalized",
-              type: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
-              kind: "nested",
-            },
-            {
-              name: "AuctionCancelled",
-              type: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-      classHash:
-        "0x106f4fd93ab8b2a6f1bfbdf06c3d3e8e6f971cfb826bd6daa46b9447060b1c",
     },
-  },
-  sepolia: {
-    YourContract: {
-      address:
-        "0x74788b2b3dc6003c3c99c39952331ac9c664f9e27b8d958527eb3513d7b7bd6",
-      abi: [
-        {
-          type: "impl",
-          name: "YourContractImpl",
-          interface_name: "contracts::your_contract::IYourContract",
-        },
-        {
-          type: "struct",
-          name: "core::byte_array::ByteArray",
-          members: [
-            {
-              name: "data",
-              type: "core::array::Array::<core::bytes_31::bytes31>",
-            },
-            {
-              name: "pending_word",
-              type: "core::felt252",
-            },
-            {
-              name: "pending_word_len",
-              type: "core::integer::u32",
-            },
-          ],
-        },
-        {
-          type: "struct",
-          name: "core::integer::u256",
-          members: [
-            {
-              name: "low",
-              type: "core::integer::u128",
-            },
-            {
-              name: "high",
-              type: "core::integer::u128",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::option::Option::<core::integer::u256>",
-          variants: [
-            {
-              name: "Some",
-              type: "core::integer::u256",
-            },
-            {
-              name: "None",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "enum",
-          name: "core::bool",
-          variants: [
-            {
-              name: "False",
-              type: "()",
-            },
-            {
-              name: "True",
-              type: "()",
-            },
-          ],
-        },
-        {
-          type: "interface",
-          name: "contracts::your_contract::IYourContract",
-          items: [
-            {
-              type: "function",
-              name: "greeting",
-              inputs: [],
-              outputs: [
+    sepolia: {
+        AuctionPlatform: {
+            address:
+                "0x2a62b0276d867e56a2541be9915a302342f95aa58349e1872b3d4b0cd13dd53",
+            abi: [
                 {
-                  type: "core::byte_array::ByteArray",
-                },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "set_greeting",
-              inputs: [
-                {
-                  name: "new_greeting",
-                  type: "core::byte_array::ByteArray",
+                    type: "impl",
+                    name: "AuctionPlatformImpl",
+                    interface_name:
+                        "contracts::auction_platform::IAuctionPlatform",
                 },
                 {
-                  name: "amount_strk",
-                  type: "core::option::Option::<core::integer::u256>",
+                    type: "struct",
+                    name: "core::integer::u256",
+                    members: [
+                        {
+                            name: "low",
+                            type: "core::integer::u128",
+                        },
+                        {
+                            name: "high",
+                            type: "core::integer::u128",
+                        },
+                    ],
                 },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "withdraw",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "premium",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::bool",
+                    type: "enum",
+                    name: "core::bool",
+                    variants: [
+                        {
+                            name: "False",
+                            type: "()",
+                        },
+                        {
+                            name: "True",
+                            type: "()",
+                        },
+                    ],
                 },
-              ],
-              state_mutability: "view",
-            },
-          ],
-        },
-        {
-          type: "impl",
-          name: "OwnableImpl",
-          interface_name: "openzeppelin_access::ownable::interface::IOwnable",
-        },
-        {
-          type: "interface",
-          name: "openzeppelin_access::ownable::interface::IOwnable",
-          items: [
-            {
-              type: "function",
-              name: "owner",
-              inputs: [],
-              outputs: [
                 {
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: "struct",
+                    name: "contracts::auction_platform::Auction",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "seller",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "asset_id",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "starting_price",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "start_time",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "duration",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "end_time",
+                            type: "core::integer::u64",
+                        },
+                        {
+                            name: "highest_bid",
+                            type: "core::integer::u256",
+                        },
+                        {
+                            name: "highest_bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "finalized",
+                            type: "core::bool",
+                        },
+                        {
+                            name: "cancelled",
+                            type: "core::bool",
+                        },
+                    ],
                 },
-              ],
-              state_mutability: "view",
-            },
-            {
-              type: "function",
-              name: "transfer_ownership",
-              inputs: [
                 {
-                  name: "new_owner",
-                  type: "core::starknet::contract_address::ContractAddress",
+                    type: "struct",
+                    name: "contracts::auction_platform::Bid",
+                    members: [
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                        },
+                        {
+                            name: "bid_hash",
+                            type: "core::felt252",
+                        },
+                        {
+                            name: "revealed",
+                            type: "core::bool",
+                        },
+                        {
+                            name: "actual_amount",
+                            type: "core::integer::u256",
+                        },
+                    ],
                 },
-              ],
-              outputs: [],
-              state_mutability: "external",
-            },
-            {
-              type: "function",
-              name: "renounce_ownership",
-              inputs: [],
-              outputs: [],
-              state_mutability: "external",
-            },
-          ],
+                {
+                    type: "interface",
+                    name: "contracts::auction_platform::IAuctionPlatform",
+                    items: [
+                        {
+                            type: "function",
+                            name: "create_auction",
+                            inputs: [
+                                {
+                                    name: "asset_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "starting_price",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "duration",
+                                    type: "core::integer::u64",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "place_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "bid_hash",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "reveal_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "actual_amount",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "secret",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "finalize_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "cancel_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [],
+                            state_mutability: "external",
+                        },
+                        {
+                            type: "function",
+                            name: "get_auction",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "contracts::auction_platform::Auction",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "get_bid",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "bidder",
+                                    type: "core::starknet::contract_address::ContractAddress",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "contracts::auction_platform::Bid",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "is_auction_active",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::bool",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "is_auction_ended",
+                            inputs: [
+                                {
+                                    name: "auction_id",
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::bool",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "get_auction_count",
+                            inputs: [],
+                            outputs: [
+                                {
+                                    type: "core::integer::u256",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                        {
+                            type: "function",
+                            name: "compute_bid_hash",
+                            inputs: [
+                                {
+                                    name: "amount",
+                                    type: "core::integer::u256",
+                                },
+                                {
+                                    name: "secret",
+                                    type: "core::felt252",
+                                },
+                            ],
+                            outputs: [
+                                {
+                                    type: "core::felt252",
+                                },
+                            ],
+                            state_mutability: "view",
+                        },
+                    ],
+                },
+                {
+                    type: "constructor",
+                    name: "constructor",
+                    inputs: [],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "seller",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "data",
+                        },
+                        {
+                            name: "asset_id",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                        {
+                            name: "starting_price",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                        {
+                            name: "end_time",
+                            type: "core::integer::u64",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::BidPlaced",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "key",
+                        },
+                        {
+                            name: "bid_hash",
+                            type: "core::felt252",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::BidRevealed",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "bidder",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "key",
+                        },
+                        {
+                            name: "actual_amount",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                        {
+                            name: "winner",
+                            type: "core::starknet::contract_address::ContractAddress",
+                            kind: "data",
+                        },
+                        {
+                            name: "winning_bid",
+                            type: "core::integer::u256",
+                            kind: "data",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
+                    kind: "struct",
+                    members: [
+                        {
+                            name: "auction_id",
+                            type: "core::integer::u256",
+                            kind: "key",
+                        },
+                    ],
+                },
+                {
+                    type: "event",
+                    name: "contracts::auction_platform::AuctionPlatform::Event",
+                    kind: "enum",
+                    variants: [
+                        {
+                            name: "AuctionCreated",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionCreated",
+                            kind: "nested",
+                        },
+                        {
+                            name: "BidPlaced",
+                            type: "contracts::auction_platform::AuctionPlatform::BidPlaced",
+                            kind: "nested",
+                        },
+                        {
+                            name: "BidRevealed",
+                            type: "contracts::auction_platform::AuctionPlatform::BidRevealed",
+                            kind: "nested",
+                        },
+                        {
+                            name: "AuctionFinalized",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionFinalized",
+                            kind: "nested",
+                        },
+                        {
+                            name: "AuctionCancelled",
+                            type: "contracts::auction_platform::AuctionPlatform::AuctionCancelled",
+                            kind: "nested",
+                        },
+                    ],
+                },
+            ],
+            classHash:
+                "0x106f4fd93ab8b2a6f1bfbdf06c3d3e8e6f971cfb826bd6daa46b9447060b1c",
         },
-        {
-          type: "constructor",
-          name: "constructor",
-          inputs: [
-            {
-              name: "owner",
-              type: "core::starknet::contract_address::ContractAddress",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-          kind: "struct",
-          members: [
-            {
-              name: "previous_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_owner",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnershipTransferred",
-              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-              kind: "nested",
-            },
-            {
-              name: "OwnershipTransferStarted",
-              type: "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-              kind: "nested",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::your_contract::YourContract::GreetingChanged",
-          kind: "struct",
-          members: [
-            {
-              name: "greeting_setter",
-              type: "core::starknet::contract_address::ContractAddress",
-              kind: "key",
-            },
-            {
-              name: "new_greeting",
-              type: "core::byte_array::ByteArray",
-              kind: "key",
-            },
-            {
-              name: "premium",
-              type: "core::bool",
-              kind: "data",
-            },
-            {
-              name: "value",
-              type: "core::option::Option::<core::integer::u256>",
-              kind: "data",
-            },
-          ],
-        },
-        {
-          type: "event",
-          name: "contracts::your_contract::YourContract::Event",
-          kind: "enum",
-          variants: [
-            {
-              name: "OwnableEvent",
-              type: "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
-              kind: "flat",
-            },
-            {
-              name: "GreetingChanged",
-              type: "contracts::your_contract::YourContract::GreetingChanged",
-              kind: "nested",
-            },
-          ],
-        },
-      ],
-      classHash:
-        "0x21e2aa81952de7b6851d5e76ea1f70283373407b22bfb4d32fafa4c5e2c8f1d",
     },
-  },
-} as const;
+};
 
 export default deployedContracts;

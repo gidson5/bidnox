@@ -3,9 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAccount } from "@starknet-react/core";
 import { CustomConnectButton } from "~~/components/scaffold-stark";
 import { useCreateAuction } from "~~/hooks/auction";
 import { validateAuctionForm } from "~~/utils/auction";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
+import { notification } from "~~/utils/scaffold-stark";
 
 interface AuctionFormData {
     assetId: string;
@@ -22,7 +26,12 @@ export default function CreateAuctionPage() {
     const [errors, setErrors] = useState<Partial<AuctionFormData>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const { address: connectedAddress, status } = useAccount();
     const { createAuction } = useCreateAuction();
+    const { data: deployedContract } = useDeployedContractInfo({
+        contractName: "AuctionPlatform",
+    });
+    const { targetNetwork } = useTargetNetwork();
 
     const handleInputChange = (field: keyof AuctionFormData, value: string) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -33,35 +42,157 @@ export default function CreateAuctionPage() {
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
+        console.log("\n" + "=".repeat(60));
+        console.log("🚀 AUCTION CREATION FLOW STARTED");
+        console.log("=".repeat(60));
+
         e.preventDefault();
 
+        console.log("\n[STEP 1] Form Data Received:");
+        console.log("  → Asset ID:", formData.assetId);
+        console.log("  → Starting Price:", formData.startingPrice);
+        console.log("  → Duration:", formData.duration);
+
         // Validate form
+        console.log("\n[STEP 2] Running Form Validation...");
         const validationErrors = validateAuctionForm(formData);
+        console.log("  → Validation errors:", validationErrors);
+
         if (Object.keys(validationErrors).length > 0) {
+            console.error("  ❌ Validation failed!");
             setErrors(validationErrors);
             return;
         }
+        console.log("  ✅ Form validation passed");
+
+        // Check if wallet is connected
+        console.log("\n[STEP 3] Checking Wallet Connection:");
+        console.log("  → Wallet status:", status);
+        console.log("  → Connected address:", connectedAddress);
+
+        if (status !== "connected" || !connectedAddress) {
+            console.error("  ❌ Wallet not connected!");
+            alert("Please connect your wallet first!");
+            return;
+        }
+        console.log("  ✅ Wallet connected");
 
         setIsSubmitting(true);
+        console.log("\n[STEP 4] Setting submitting state to TRUE");
+
         try {
-            await createAuction(
-                BigInt(formData.assetId),
-                BigInt(formData.startingPrice),
-                Number(formData.duration)
+            // Parse and validate inputs
+            let assetIdBigInt: bigint;
+            let startingPriceInWei: bigint;
+            let durationNumber: number;
+
+            console.log("\n[STEP 5] Parsing Asset ID...");
+            try {
+                assetIdBigInt = BigInt(formData.assetId);
+                console.log("  ✅ Asset ID parsed:", assetIdBigInt.toString());
+            } catch (e) {
+                console.error("  ❌ Failed to parse Asset ID:", e);
+                alert("Invalid Asset ID. Please enter a valid number.");
+                setIsSubmitting(false);
+                return;
+            }
+
+            console.log("\n[STEP 6] Parsing Starting Price...");
+            if (!formData.startingPrice) {
+                console.error("  ❌ Starting price is empty");
+                alert("Please enter a starting price");
+                setIsSubmitting(false);
+                return;
+            }
+
+            const priceFloat = parseFloat(formData.startingPrice);
+            console.log("  → Price as float:", priceFloat);
+
+            if (isNaN(priceFloat) || priceFloat <= 0) {
+                console.error("  ❌ Invalid price value");
+                alert("Starting price must be a positive number");
+                setIsSubmitting(false);
+                return;
+            }
+
+            // Convert STRK to wei (multiply by 10^18)
+            startingPriceInWei = BigInt(Math.floor(priceFloat * 10 ** 18));
+            console.log(
+                "  ✅ Price converted to wei:",
+                startingPriceInWei.toString()
+            );
+            console.log(
+                "     (",
+                priceFloat,
+                "STRK =",
+                startingPriceInWei.toString(),
+                "wei )"
             );
 
-            // Reset form on success
-            setFormData({
-                assetId: "",
-                startingPrice: "",
-                duration: "",
-            });
+            console.log("\n[STEP 7] Parsing Duration...");
+            try {
+                durationNumber = Number(formData.duration);
+                console.log("  → Duration as number:", durationNumber);
 
-            // You could redirect or show success message here
-        } catch (error) {
-            console.error("Failed to create auction:", error);
+                if (isNaN(durationNumber) || durationNumber <= 0) {
+                    throw new Error("Invalid duration value");
+                }
+                console.log("  ✅ Duration parsed:", durationNumber, "seconds");
+            } catch (e) {
+                console.error("  ❌ Failed to parse duration:", e);
+                alert("Invalid duration. Please select a valid option.");
+                setIsSubmitting(false);
+                return;
+            }
+
+            console.log("\n[STEP 8] Prepared Transaction Parameters:");
+            console.log("  → Asset ID (bigint):", assetIdBigInt.toString());
+            console.log(
+                "  → Starting Price (wei):",
+                startingPriceInWei.toString()
+            );
+            console.log("  → Duration (seconds):", durationNumber);
+
+            console.log("\n[STEP 9] Calling createAuction hook...");
+            const result = await createAuction(
+                assetIdBigInt,
+                startingPriceInWei,
+                durationNumber
+            );
+
+            console.log("\n[STEP 10] createAuction Result:");
+            console.log("  → Success:", result.success);
+            console.log("  → Full result:", result);
+
+            if (result.success) {
+                console.log("  ✅✅✅ AUCTION CREATED SUCCESSFULLY!");
+                alert("✅ Auction created successfully!");
+
+                // Reset form on success
+                setFormData({
+                    assetId: "",
+                    startingPrice: "",
+                    duration: "",
+                });
+                console.log("  → Form reset complete");
+            } else {
+                console.error("  ❌ Transaction failed");
+                console.error("  → Error details:", result.error);
+                alert("❌ Transaction failed. Please try again.");
+            }
+        } catch (error: any) {
+            console.error("\n❌❌❌ EXCEPTION CAUGHT in handleSubmit:");
+            console.error("  → Error type:", typeof error);
+            console.error("  → Error:", error);
+            console.error("  → Error message:", error?.message);
+            console.error("  → Error stack:", error?.stack);
+            alert("❌ Error creating auction. Check console for details.");
         } finally {
             setIsSubmitting(false);
+            console.log("\n[FINAL] Setting submitting state to FALSE");
+            console.log("=".repeat(60));
+            console.log("🏁 AUCTION CREATION FLOW ENDED");
+            console.log("=".repeat(60) + "\n");
         }
     };
 
@@ -100,6 +231,22 @@ export default function CreateAuctionPage() {
                     </p>
                 </div>
 
+                {/* Network Info */}
+                {!deployedContract?.address && (
+                    <div className="bg-blue-900/20 border-2 border-blue-500/50 rounded-lg p-4 mb-8">
+                        <div className="flex items-start gap-3">
+                            <div className="text-2xl">ℹ️</div>
+                            <div className="flex-1">
+                                <p className="text-blue-300 text-sm">
+                                    <strong>Network:</strong>{" "}
+                                    {targetNetwork.name} • Make sure your wallet
+                                    is connected to Sepolia testnet
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Form */}
                 <div className="bg-gray-800 rounded-lg border border-gray-700 p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -112,8 +259,10 @@ export default function CreateAuctionPage() {
                                 Asset ID *
                             </label>
                             <input
-                                type="text"
+                                type="number"
                                 id="assetId"
+                                min="0"
+                                step="1"
                                 value={formData.assetId}
                                 onChange={(e) =>
                                     handleInputChange("assetId", e.target.value)
@@ -123,7 +272,7 @@ export default function CreateAuctionPage() {
                                         ? "border-red-500"
                                         : "border-gray-600"
                                 }`}
-                                placeholder="Enter the asset identifier (e.g., NFT token ID)"
+                                placeholder="123"
                             />
                             {errors.assetId && (
                                 <p className="mt-1 text-sm text-red-400">

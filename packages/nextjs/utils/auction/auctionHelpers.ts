@@ -23,18 +23,28 @@ export const validateAuctionForm = (formData: {
 }): Partial<typeof formData> => {
     const errors: Partial<typeof formData> = {};
 
+    // Validate Asset ID is a number
     if (!formData.assetId || formData.assetId.trim() === "") {
         errors.assetId = "Asset ID is required";
+    } else {
+        const assetIdNum = parseFloat(formData.assetId);
+        if (
+            isNaN(assetIdNum) ||
+            !Number.isInteger(assetIdNum) ||
+            assetIdNum < 0
+        ) {
+            errors.assetId = "Asset ID must be a positive whole number";
+        }
     }
 
     const price = parseFloat(formData.startingPrice);
-    if (isNaN(price) || price <= 0) {
+    if (!formData.startingPrice || isNaN(price) || price <= 0) {
         errors.startingPrice = "Starting price must be greater than 0";
     }
 
     const duration = parseInt(formData.duration);
     if (!duration || duration <= 0) {
-        errors.duration = "Duration must be greater than 0";
+        errors.duration = "Duration must be selected";
     }
 
     return errors;

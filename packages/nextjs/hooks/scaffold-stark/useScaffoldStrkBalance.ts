@@ -6,7 +6,7 @@ import { Abi } from "abi-wan-kanabi";
 import { formatUnits } from "ethers";
 
 type UseScaffoldStrkBalanceProps = {
-  address?: Address | string;
+    address?: Address | string;
 };
 
 /**
@@ -27,25 +27,25 @@ type UseScaffoldStrkBalanceProps = {
  */
 
 const useScaffoldStrkBalance = ({ address }: UseScaffoldStrkBalanceProps) => {
-  const { data: deployedContract } = useDeployedContractInfo("Strk");
+    const { data: deployedContract } = useDeployedContractInfo("Strk");
 
-  const { data, ...props } = useReadContract({
-    functionName: "balance_of",
-    address: deployedContract?.address,
-    abi: deployedContract?.abi as Abi as any[],
-    watch: true,
-    enabled: true,
-    args: address ? [address] : [],
-    blockIdentifier: "pre_confirmed" as BlockNumber,
-  });
+    const { data, ...props } = useReadContract({
+        functionName: "balance_of",
+        address: deployedContract?.address,
+        abi: deployedContract?.abi as Abi as any[],
+        watch: true,
+        enabled: true,
+        args: address ? [address] : [],
+        blockIdentifier: "latest" as BlockNumber,
+    });
 
-  return {
-    value: data as unknown as bigint,
-    decimals: 18,
-    symbol: "STRK",
-    formatted: data ? formatUnits(data as unknown as bigint) : "0",
-    ...props,
-  };
+    return {
+        value: data as unknown as bigint,
+        decimals: 18,
+        symbol: "STRK",
+        formatted: data ? formatUnits(data as unknown as bigint) : "0",
+        ...props,
+    };
 };
 
 export default useScaffoldStrkBalance;

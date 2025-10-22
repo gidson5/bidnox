@@ -52,125 +52,156 @@ export default function LandingPage() {
                 </div>
 
                 <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-                    <div className="text-center">
-                        {/* Logo with pulse effect */}
-                        <div
-                            className={`flex justify-center mb-8 transition-all duration-1000 ${
-                                mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 -translate-y-10"
-                            }`}
-                        >
-                            <div className="relative w-32 h-32 animate-pulse-slow">
-                                <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
-                                <Image
-                                    src="/logo-app.png"
-                                    alt="BidNox Logo"
-                                    fill
-                                    className="object-contain drop-shadow-2xl relative z-10"
-                                />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        {/* Left Column - Text Content */}
+                        <div className="text-center lg:text-left">
+                            {/* Logo with pulse effect */}
+                            <div
+                                className={`flex justify-center lg:justify-start mb-8 transition-all duration-1000 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 -translate-y-10"
+                                }`}
+                            >
+                                <div className="relative w-24 h-24 animate-pulse-slow">
+                                    <div className="absolute inset-0 bg-blue-500/20 rounded-full blur-xl animate-pulse"></div>
+                                    <Image
+                                        src="/logo-app.png"
+                                        alt="BidNox Logo"
+                                        fill
+                                        sizes="96px"
+                                        className="object-contain drop-shadow-2xl relative z-10"
+                                    />
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Headline */}
-                        <h1
-                            className={`text-5xl sm:text-6xl lg:text-7xl font-bold text-white mb-6 transition-all duration-1000 delay-200 ${
-                                mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-10"
-                            }`}
-                        >
-                            Welcome to{" "}
-                            <span className="relative inline-block">
-                                <span className="text-blue-500 animate-pulse-slow">
-                                    BidNox
-                                </span>
-                                <div className="absolute -bottom-2 left-0 right-0 h-1 bg-orange-500 rounded-full"></div>
-                            </span>
-                        </h1>
-
-                        {/* Subheadline */}
-                        <p
-                            className={`text-xl sm:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto transition-all duration-1000 delay-400 ${
-                                mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-10"
-                            }`}
-                        >
-                            The Future of{" "}
-                            <span className="text-blue-400 font-semibold">
-                                Decentralized
-                            </span>{" "}
-                            Sealed-Bid Auctions on Starknet
-                        </p>
-
-                        <p
-                            className={`text-lg text-gray-400 mb-12 max-w-2xl mx-auto transition-all duration-1000 delay-600 ${
-                                mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-10"
-                            }`}
-                        >
-                            Create, participate, and win in transparent, secure,
-                            and trustless auctions powered by blockchain
-                            technology. Experience the next generation of
-                            digital asset trading.
-                        </p>
-
-                        {/* CTA Buttons */}
-                        <div
-                            className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-800 ${
-                                mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-10"
-                            }`}
-                        >
-                            <Link href="/auction">
-                                <button className="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg shadow-blue-500/50 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/70 transition-all duration-300">
-                                    <span className="relative z-10 flex items-center gap-2 justify-center">
-                                        <RocketLaunchIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                                        Launch App
+                            {/* Headline */}
+                            <h1
+                                className={`text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 transition-all duration-1000 delay-200 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 translate-y-10"
+                                }`}
+                            >
+                                Welcome to{" "}
+                                <span className="relative inline-block">
+                                    <span className="text-blue-500 animate-pulse-slow">
+                                        BidNox
                                     </span>
-                                    <div className="absolute inset-0 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-                                </button>
-                            </Link>
-                            <a href="#features">
-                                <button className="border-2 border-blue-500 text-blue-400 hover:bg-blue-500/10 px-8 py-4 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300">
-                                    Learn More
-                                </button>
-                            </a>
+                                    <div className="absolute -bottom-2 left-0 right-0 h-1 bg-orange-500 rounded-full"></div>
+                                </span>
+                            </h1>
+
+                            {/* Subheadline */}
+                            <p
+                                className={`text-lg sm:text-xl text-gray-300 mb-6 max-w-2xl mx-auto lg:mx-0 transition-all duration-1000 delay-400 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 translate-y-10"
+                                }`}
+                            >
+                                The Future of{" "}
+                                <span className="text-blue-400 font-semibold">
+                                    Decentralized
+                                </span>{" "}
+                                Sealed-Bid Auctions on Starknet
+                            </p>
+
+                            <p
+                                className={`text-base text-gray-400 mb-10 max-w-xl mx-auto lg:mx-0 transition-all duration-1000 delay-600 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 translate-y-10"
+                                }`}
+                            >
+                                Create, participate, and win in transparent,
+                                secure, and trustless auctions powered by
+                                blockchain technology. Experience the next
+                                generation of digital asset trading.
+                            </p>
+
+                            {/* CTA Buttons */}
+                            <div
+                                className={`flex flex-col sm:flex-row gap-4 justify-center lg:justify-start transition-all duration-1000 delay-800 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 translate-y-10"
+                                }`}
+                            >
+                                <Link href="/auction">
+                                    <button className="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg shadow-blue-500/50 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/70 transition-all duration-300">
+                                        <span className="relative z-10 flex items-center gap-2 justify-center">
+                                            <RocketLaunchIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                                            Launch App
+                                        </span>
+                                        <div className="absolute inset-0 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
+                                    </button>
+                                </Link>
+                                <a href="#features">
+                                    <button className="border-2 border-blue-500 text-blue-400 hover:bg-blue-500/10 px-8 py-4 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300">
+                                        Learn More
+                                    </button>
+                                </a>
+                            </div>
+
+                            {/* Stats with animated counters */}
+                            <div
+                                className={`mt-12 grid grid-cols-3 gap-6 max-w-xl mx-auto lg:mx-0 transition-all duration-1000 delay-1000 ${
+                                    mounted
+                                        ? "opacity-100 translate-y-0"
+                                        : "opacity-0 translate-y-10"
+                                }`}
+                            >
+                                <div className="text-center lg:text-left group cursor-pointer">
+                                    <div className="text-3xl font-bold text-blue-400 mb-1 group-hover:scale-110 transition-transform">
+                                        100%
+                                    </div>
+                                    <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                                        Decentralized
+                                    </div>
+                                </div>
+                                <div className="text-center lg:text-left group cursor-pointer">
+                                    <div className="text-3xl font-bold text-orange-400 mb-1 group-hover:scale-110 transition-transform">
+                                        <LockClosedIcon className="w-10 h-10 inline" />
+                                    </div>
+                                    <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                                        Sealed Bids
+                                    </div>
+                                </div>
+                                <div className="text-center lg:text-left group cursor-pointer">
+                                    <div className="text-3xl font-bold text-green-400 mb-1 group-hover:scale-110 transition-transform">
+                                        0 Fees
+                                    </div>
+                                    <div className="text-xs text-gray-400 group-hover:text-gray-300 transition-colors">
+                                        Platform
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        {/* Stats with animated counters */}
+                        {/* Right Column - Mascot */}
                         <div
-                            className={`mt-16 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto transition-all duration-1000 delay-1000 ${
+                            className={`hidden lg:flex justify-center items-center transition-all duration-1000 delay-400 ${
                                 mounted
-                                    ? "opacity-100 translate-y-0"
-                                    : "opacity-0 translate-y-10"
+                                    ? "opacity-100 translate-x-0"
+                                    : "opacity-0 translate-x-10"
                             }`}
                         >
-                            <div className="text-center group cursor-pointer">
-                                <div className="text-4xl font-bold text-blue-400 mb-2 group-hover:scale-110 transition-transform">
-                                    100%
-                                </div>
-                                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                                    Decentralized
-                                </div>
-                            </div>
-                            <div className="text-center group cursor-pointer">
-                                <div className="text-4xl font-bold text-orange-400 mb-2 group-hover:scale-110 transition-transform">
-                                    <LockClosedIcon className="w-12 h-12 inline" />
-                                </div>
-                                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                                    Sealed Bid Privacy
-                                </div>
-                            </div>
-                            <div className="text-center group cursor-pointer">
-                                <div className="text-4xl font-bold text-green-400 mb-2 group-hover:scale-110 transition-transform">
-                                    0 Fees
-                                </div>
-                                <div className="text-gray-400 group-hover:text-gray-300 transition-colors">
-                                    Platform Charges
+                            <div className="relative w-full max-w-lg">
+                                {/* Glow effect behind mascot */}
+                                <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-3xl animate-pulse"></div>
+
+                                {/* Mascot Image */}
+                                <div className="relative animate-float">
+                                    <Image
+                                        src="/mascot.png"
+                                        alt="BidNox Mascot"
+                                        width={500}
+                                        height={500}
+                                        sizes="(max-width: 1024px) 100vw, 500px"
+                                        className="object-contain drop-shadow-2xl relative z-10"
+                                        priority
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -444,29 +475,54 @@ export default function LandingPage() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-24 bg-gray-800 border-t border-gray-700">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
-                        Ready to Start Bidding?
-                    </h2>
-                    <p className="text-xl text-gray-400 mb-12">
-                        Join BidNox today and experience the future of
-                        decentralized auctions
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <Link href="/auction">
-                            <button className="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg shadow-blue-500/50 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/70 transition-all duration-300">
-                                <span className="relative z-10 flex items-center gap-2 justify-center">
-                                    <RocketLaunchIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
-                                    Launch App Now
-                                </span>
-                            </button>
-                        </Link>
-                        <Link href="/auction/create">
-                            <button className="border-2 border-orange-500 text-orange-400 hover:bg-orange-500/10 px-8 py-4 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300">
-                                Create Your First Auction
-                            </button>
-                        </Link>
+            <section className="py-24 bg-gray-800 border-t border-gray-700 relative overflow-hidden">
+                {/* Background decoration */}
+                <div className="absolute inset-0 opacity-10">
+                    <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl"></div>
+                    <div className="absolute bottom-0 left-0 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                        {/* Left - Mascot for visual appeal */}
+                        <div className="hidden lg:flex justify-center">
+                            <div className="relative w-80 h-80 animate-float-delay">
+                                <Image
+                                    src="/mascot.png"
+                                    alt="BidNox Mascot"
+                                    width={320}
+                                    height={320}
+                                    sizes="320px"
+                                    className="object-contain drop-shadow-2xl"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Right - CTA Content */}
+                        <div className="text-center lg:text-left">
+                            <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
+                                Ready to Start Bidding?
+                            </h2>
+                            <p className="text-xl text-gray-400 mb-12">
+                                Join BidNox today and experience the future of
+                                decentralized auctions
+                            </p>
+                            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                                <Link href="/auction">
+                                    <button className="group relative overflow-hidden bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold shadow-lg shadow-blue-500/50 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/70 transition-all duration-300">
+                                        <span className="relative z-10 flex items-center gap-2 justify-center">
+                                            <RocketLaunchIcon className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+                                            Launch App Now
+                                        </span>
+                                    </button>
+                                </Link>
+                                <Link href="/auction/create">
+                                    <button className="border-2 border-orange-500 text-orange-400 hover:bg-orange-500/10 px-8 py-4 rounded-lg font-semibold transform hover:scale-105 transition-all duration-300">
+                                        Create Your First Auction
+                                    </button>
+                                </Link>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -474,13 +530,15 @@ export default function LandingPage() {
             {/* Footer */}
             <footer className="bg-gray-900 py-12 border-t border-gray-800">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex flex-col md:flex-row justify-between items-center">
-                        <div className="flex items-center space-x-2 mb-4 md:mb-0">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
+                        {/* Left - Logo and name */}
+                        <div className="flex items-center justify-center md:justify-start space-x-2">
                             <div className="relative w-10 h-10">
                                 <Image
                                     src="/logo-app.png"
                                     alt="BidNox Logo"
                                     fill
+                                    sizes="40px"
                                     className="object-contain"
                                 />
                             </div>
@@ -488,6 +546,22 @@ export default function LandingPage() {
                                 BidNox
                             </span>
                         </div>
+
+                        {/* Center - Mascot */}
+                        <div className="flex justify-center">
+                            <div className="relative w-16 h-16 opacity-60 hover:opacity-100 transition-opacity">
+                                <Image
+                                    src="/mascot.png"
+                                    alt="BidNox Mascot"
+                                    width={64}
+                                    height={64}
+                                    sizes="64px"
+                                    className="object-contain"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Right - Info */}
                         <div className="text-gray-400 text-center md:text-right">
                             <p>
                                 Built on Starknet • Powered by Blockchain

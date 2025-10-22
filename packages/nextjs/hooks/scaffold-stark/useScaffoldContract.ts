@@ -20,43 +20,99 @@ import { useMemo } from "react";
  */
 
 export const useScaffoldContract = <TContractName extends ContractName>({
-  contractName,
+    contractName,
 }: {
-  contractName: TContractName;
+    contractName: TContractName;
 }) => {
-  const { data: deployedContractData, isLoading: deployedContractLoading } =
-    useDeployedContractInfo(contractName);
+    const { data: deployedContractData, isLoading: deployedContractLoading } =
+        useDeployedContractInfo(contractName);
 
-  const { provider: publicClient } = useProvider();
-  const { account } = useAccount();
+    const { provider: publicClient } = useProvider();
+    const { account } = useAccount();
 
-  const contract = useMemo(() => {
-    if (!deployedContractData) return undefined;
+    const contract = useMemo(() => {
+        if (!deployedContractData) {
+            console.log("[useScaffoldContract] No deployed contract data");
+            return undefined;
+        }
 
-    const contractInstance = new Contract({
-      abi: deployedContractData.abi as Abi,
-      address: deployedContractData.address,
-      providerOrAccount: publicClient,
-    });
+        if (!publicClient) {
+            console.log("[useScaffoldContract] Provider not ready");
+            return undefined;
+        }
 
-    if (account) {
-      contractInstance.connect(account);
-    }
+        console.log(
+            "[useScaffoldContract] Creating contract instance for:",
+            contractName
+        );
 
-    const originalCall = contractInstance.call.bind(contractInstance);
-    contractInstance.call = async (method: string, ...args: any[]) => {
-      try {
-        return await originalCall(method, ...args, { parseResponse: false });
-      } catch (error) {
-        return originalCall(method, ...args);
-      }
+        try {
+            // Validate ABI exists and is not empty
+            if (
+                !deployedContractData.abi ||
+                !Array.isArray(deployedContractData.abi) ||
+                deployedContractData.abi.length === 0
+            ) {
+                console.error(
+                    "[useScaffoldContract] Invalid ABI:",
+                    deployedContractData.abi
+                );
+                return undefined;
+            }
+
+            console.log("[useScaffoldContract] ABI validation passed");
+            console.log(
+                "[useScaffoldContract] ABI items count:",
+                deployedContractData.abi.length
+            );
+            console.log(
+                "[useScaffoldContract] Contract address:",
+                deployedContractData.address
+            );
+
+            // Create a mutable copy of the ABI to avoid readonly type issues
+            // This is necessary because starknet.js modifies the ABI internally
+            const mutableAbi = structuredClone(deployedContractData.abi) as Abi;
+
+            console.log("[useScaffoldContract] Creating contract instance...");
+
+            // Create contract instance
+            const contractInstance = new Contract(
+                mutableAbi,
+                deployedContractData.address,
+                publicClient
+            );
+
+            if (account) {
+                contractInstance.connect(account);
+            }
+
+            const originalCall = contractInstance.call.bind(contractInstance);
+            contractInstance.call = async (method: string, ...args: any[]) => {
+                try {
+                    return await originalCall(method, ...args, {
+                        parseResponse: false,
+                    });
+                } catch (error) {
+                    return originalCall(method, ...args);
+                }
+            };
+
+            console.log(
+                "[useScaffoldContract] ✅ Contract instance created successfully"
+            );
+            return contractInstance;
+        } catch (error) {
+            console.error(
+                "[useScaffoldContract] ❌ Failed to create contract:",
+                error
+            );
+            return undefined;
+        }
+    }, [deployedContractData, publicClient, account, contractName]);
+
+    return {
+        data: contract,
+        isLoading: deployedContractLoading,
     };
-
-    return contractInstance;
-  }, [deployedContractData, publicClient, account]);
-
-  return {
-    data: contract,
-    isLoading: deployedContractLoading,
-  };
 };

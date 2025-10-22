@@ -7,12 +7,18 @@ import { CustomConnectButton } from "~~/components/scaffold-stark";
 import { useAuctionList } from "~~/hooks/auction";
 import { formatStrkAmount, getAuctionStatus } from "~~/utils/auction";
 import { AuctionTimer, AuctionStatusBadge } from "~~/components/auction";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
+import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 
 type AuctionFilter = "all" | "active" | "ended";
 
 export default function AuctionPage() {
     const [filter, setFilter] = useState<AuctionFilter>("all");
     const { auctions, isLoading } = useAuctionList(filter);
+    const { data: deployedContract } = useDeployedContractInfo({
+        contractName: "AuctionPlatform",
+    });
+    const { targetNetwork } = useTargetNetwork();
 
     return (
         <div className="min-h-screen bg-gray-900">
@@ -56,6 +62,22 @@ export default function AuctionPage() {
                         Browse and bid on sealed-bid auctions
                     </p>
                 </div>
+
+                {/* Network Info */}
+                {!deployedContract?.address && (
+                    <div className="bg-blue-900/20 border-2 border-blue-500/50 rounded-lg p-4 mb-8">
+                        <div className="flex items-start gap-3">
+                            <div className="text-2xl">ℹ️</div>
+                            <div className="flex-1">
+                                <p className="text-blue-300 text-sm">
+                                    <strong>Network:</strong>{" "}
+                                    {targetNetwork.name} • Contract:
+                                    AuctionPlatform
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Filter Tabs */}
                 <div className="flex space-x-1 mb-8 bg-gray-800 p-1 rounded-lg w-fit">

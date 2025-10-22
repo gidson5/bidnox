@@ -16,13 +16,31 @@ export const useCreateAuction = () => {
         startingPrice: bigint,
         duration: number
     ) => {
+        console.log("\n  [HOOK] useCreateAuction.createAuction called");
+        console.log("    → Received assetId:", assetId.toString());
+        console.log("    → Received startingPrice:", startingPrice.toString());
+        console.log("    → Received duration:", duration);
+
         try {
-            await sendAsync({
-                args: [assetId, startingPrice, BigInt(duration)],
+            const args = [assetId, startingPrice, BigInt(duration)];
+            console.log(
+                "    → Prepared args:",
+                args.map((a) => a.toString())
+            );
+
+            console.log("    → Calling sendAsync...");
+            const txResult = await sendAsync({
+                args: args,
             });
-            return { success: true };
-        } catch (error) {
-            console.error("Error creating auction:", error);
+
+            console.log("    ✅ sendAsync returned:", txResult);
+            return { success: true, txResult };
+        } catch (error: any) {
+            console.error("    ❌ Error in createAuction:");
+            console.error("      → Error type:", typeof error);
+            console.error("      → Error:", error);
+            console.error("      → Error message:", error?.message);
+            console.error("      → Error code:", error?.code);
             return { success: false, error };
         }
     };
