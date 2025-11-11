@@ -36,31 +36,31 @@ export const FaucetSepolia = () => {
   const { provider: publicClient } = useProvider();
   useEffect(() => {
     const checkChain = async () => {
+      if (ConnectedChain?.id !== sepolia.id) {
+        return;
+      }
       try {
         const providerInfo = await publicClient.getBlock();
       } catch (error) {
-        console.error("⚡️ ~ file: Faucet.tsx:checkChain ~ error", error);
-        notification.error(
+        console.warn("⚡️ ~ FaucetSepolia.checkChain: unable to reach RPC", error);
+        notification.warning(
           <>
             <p className="font-bold mt-0 mb-1">
-              Cannot connect to local provider
+              Unable to reach Starknet Sepolia RPC
             </p>
             <p className="m-0">
-              - Did you forget to run{" "}
+              - Please check your{" "}
               <code className="italic bg-base-300 text-base font-bold">
-                yarn chain
+                NEXT_PUBLIC_SEPOLIA_PROVIDER_URL
               </code>{" "}
-              ?
+              environment variable.
             </p>
             <p className="mt-1 break-normal">
-              - Or you can change{" "}
-              <code className="italic bg-base-300 text-base font-bold">
-                targetNetwork
-              </code>{" "}
-              in{" "}
+              - You can update the RPC settings in{" "}
               <code className="italic bg-base-300 text-base font-bold">
                 scaffold.config.ts
-              </code>
+              </code>{" "}
+              or adjust your provider configuration.
             </p>
           </>,
           {
@@ -71,7 +71,7 @@ export const FaucetSepolia = () => {
     };
     checkChain().then();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ConnectedChain?.id, publicClient]);
 
   const { resolvedTheme } = useTheme();
   const isDarkMode = resolvedTheme === "dark";

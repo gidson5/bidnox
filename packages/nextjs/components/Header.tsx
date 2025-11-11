@@ -93,6 +93,12 @@ export const Header = () => {
     const { address, status, chainId } = useAccount();
     const { chain } = useNetwork();
     const [isDeployed, setIsDeployed] = useState(true);
+    const { resolvedTheme } = useTheme();
+    const isDarkMode = resolvedTheme === "dark";
+
+    const navbarClasses = isDarkMode
+        ? "bg-gray-900/90 border-gray-800/80 text-gray-100"
+        : "bg-base-200/90 border-base-300/80 text-base-content";
 
     useEffect(() => {
         if (
@@ -125,7 +131,9 @@ export const Header = () => {
     ]);
 
     return (
-        <div className="navbar bg-base-100 shadow-sm border-b border-base-300">
+        <div
+            className={`navbar sticky top-0 z-50 border-b backdrop-blur ${navbarClasses}`}
+        >
             <div className="navbar-start">
                 {/* Mobile menu button */}
                 <div className="dropdown lg:hidden" ref={burgerMenuRef}>

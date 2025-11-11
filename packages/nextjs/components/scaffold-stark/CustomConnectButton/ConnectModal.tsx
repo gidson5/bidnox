@@ -42,9 +42,9 @@ const ConnectModal = () => {
         <div>
             <label
                 htmlFor="connect-modal"
-                className="bg-transparent border border-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors cursor-pointer font-medium"
+                className="btn btn-primary normal-case"
             >
-                <span>Connect Wallet</span>
+                Connect Wallet
             </label>
             <input
                 ref={modalRef}
