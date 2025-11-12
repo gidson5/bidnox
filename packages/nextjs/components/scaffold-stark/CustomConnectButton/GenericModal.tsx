@@ -1,25 +1,33 @@
-import { useTheme } from "next-themes";
+"use client";
 
-const GenericModal = ({
-  children,
-  className = "modal-box modal-border bg-modal rounded-[8px] border flex flex-col relative w-full max-w-xs p-6",
-  modalId,
-}: {
-  children: React.ReactNode;
+import { forwardRef, ReactNode } from "react";
+
+type GenericModalProps = {
+  children: ReactNode;
   className?: string;
   modalId: string;
-}) => {
-  const { resolvedTheme } = useTheme();
-  const isDarkMode = resolvedTheme === "dark";
-  return (
-    <label htmlFor={modalId} className="modal backdrop-blur-sm cursor-pointer">
-      <label className={className} style={{ minHeight: "auto" }}>
-        {/* dummy input to capture event onclick on modal box */}
-        <input className="h-0 w-0 absolute top-0 left-0" />
-        {children}
-      </label>
-    </label>
-  );
 };
+
+const GenericModal = forwardRef<HTMLDialogElement, GenericModalProps>(
+  (
+    {
+      children,
+      className = "modal-border bg-base-100 rounded-[8px] border flex flex-col relative w-full max-w-xs p-6",
+      modalId,
+    },
+    ref,
+  ) => (
+    <dialog id={modalId} ref={ref} className="modal">
+      <form method="dialog" className={`modal-box ${className}`}>
+        {children}
+      </form>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+  ),
+);
+
+GenericModal.displayName = "GenericModal";
 
 export default GenericModal;

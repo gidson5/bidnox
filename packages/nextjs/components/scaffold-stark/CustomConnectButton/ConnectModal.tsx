@@ -8,7 +8,7 @@ import { LAST_CONNECTED_TIME_LOCALSTORAGE_KEY } from "~~/utils/Constants";
 const loader = ({ src }: { src: string }) => src;
 
 const ConnectModal = () => {
-    const modalRef = useRef<HTMLInputElement>(null);
+    const modalRef = useRef<HTMLDialogElement>(null);
     const { connectors, connect } = useConnect();
     const [, setLastConnector] = useLocalStorage<{ id: string }>(
         "lastUsedConnector",
@@ -23,8 +23,12 @@ const ConnectModal = () => {
         false
     );
 
+    const openModal = () => {
+        modalRef.current?.showModal();
+    };
+
     const handleCloseModal = () => {
-        if (modalRef.current) modalRef.current.checked = false;
+        modalRef.current?.close();
     };
 
     function handleConnectWallet(
@@ -40,28 +44,25 @@ const ConnectModal = () => {
 
     return (
         <div>
-            <label
-                htmlFor="connect-modal"
+            <button
+                type="button"
                 className="btn btn-primary normal-case"
+                onClick={openModal}
             >
                 Connect Wallet
-            </label>
-            <input
-                ref={modalRef}
-                type="checkbox"
-                id="connect-modal"
-                className="modal-toggle"
-            />
-            <GenericModal modalId="connect-modal">
+            </button>
+
+            <GenericModal ref={modalRef} modalId="connect-modal">
                 <>
                     <div className="flex items-center justify-between">
                         <h3 className="text-xl font-bold">Connect a Wallet</h3>
-                        <label
-                            htmlFor="connect-modal"
+                        <button
+                            type="button"
                             className="btn btn-ghost btn-sm btn-circle cursor-pointer"
+                            onClick={handleCloseModal}
                         >
                             ✕
-                        </label>
+                        </button>
                     </div>
                     <div className="flex flex-col flex-1 lg:grid">
                         <div className="flex flex-col gap-4 w-full px-8 py-10">
