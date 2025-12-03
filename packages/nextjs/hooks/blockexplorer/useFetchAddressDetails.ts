@@ -87,8 +87,42 @@ export const useFetchAddressDetails = (address?: Address | string) => {
 
       try {
         // Try to get class hash (indicates this is a deployed contract)
-        const { abi: contractAbi } = await provider.getClassAt(address);
-        const classHash = await provider.getClassHashAt(address);
+        let contractAbi;
+        let classHash;
+
+        try {
+          const classResponse = await provider.getClassAt(address);
+          contractAbi = classResponse.abi;
+        } catch (getClassError: any) {
+          // Contract might not exist or might not be a contract
+          const errorMessage = String(getClassError?.message || getClassError || "");
+          if (
+            errorMessage.includes("Contract not found") ||
+            errorMessage.includes("not found") ||
+            getClassError?.code === 20
+          ) {
+            // Contract doesn't exist - treat as account
+            addressDetails.type = "ACCOUNT";
+            return addressDetails;
+          }
+          throw getClassError;
+        }
+
+        try {
+          classHash = await provider.getClassHashAt(address);
+        } catch (classHashError: any) {
+          // If we can't get class hash, check if it's a "not found" error
+          const errorMessage = String(classHashError?.message || classHashError || "");
+          if (
+            errorMessage.includes("Contract not found") ||
+            errorMessage.includes("not found") ||
+            classHashError?.code === 20
+          ) {
+            addressDetails.type = "ACCOUNT";
+            return addressDetails;
+          }
+          throw classHashError;
+        }
 
         if (classHash && classHash !== "0x0") {
           addressDetails.classHash = classHash;
@@ -140,10 +174,6 @@ export const useFetchAddressDetails = (address?: Address | string) => {
           // Address exists but no class hash - likely an externally owned account or undeployed
           addressDetails.type = "ACCOUNT";
         }
-      } catch (classHashError) {
-        // If we can't get class hash, it might be an EOA or the address doesn't exist
-        console.warn("Could not fetch class hash:", classHashError);
-        addressDetails.type = "ACCOUNT";
       }
 
       return addressDetails;

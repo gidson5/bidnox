@@ -57,8 +57,19 @@ export class ContractClassHashCache {
             );
             this.cache.set(cacheKey, classHash);
             return classHash;
-        } catch (error) {
-            console.error("Failed to fetch class hash:", error);
+        } catch (error: any) {
+            // Check if error is "Contract not found" - this is expected for some addresses
+            const errorMessage = String(error?.message || error || "");
+            const isContractNotFound =
+                errorMessage.includes("Contract not found") ||
+                errorMessage.includes("not found") ||
+                error?.code === 20;
+
+            if (!isContractNotFound) {
+                // Only log unexpected errors
+                console.error("Failed to fetch class hash:", error);
+            }
+            // Return undefined for both "contract not found" and other errors
             return undefined;
         }
     }

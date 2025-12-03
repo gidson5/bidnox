@@ -20,29 +20,9 @@ export const WalletGate = ({ children }: { children: ReactNode }) => {
     return <>{children}</>;
   }
 
+  // Show children on landing page even if not connected (connect button is in header)
   if (isLandingPage) {
-    return (
-      <>
-        {children}
-        <div className="fixed bottom-6 inset-x-0 px-4 md:px-0 flex justify-center pointer-events-none">
-          <div className="pointer-events-auto max-w-xl w-full bg-base-200/90 backdrop-blur border border-base-300 rounded-xl p-6 shadow-lg flex flex-col md:flex-row items-center gap-4">
-            <div className="text-center md:text-left space-y-1">
-              <p className="text-lg font-semibold">
-                Connect your Starknet wallet
-              </p>
-              <p className="text-sm opacity-70">
-                Access auctions and manage bids by signing in with your wallet.
-              </p>
-            </div>
-            {isConnecting ? (
-              <span className="loading loading-spinner text-primary" />
-            ) : (
-              <CustomConnectButton />
-            )}
-          </div>
-        </div>
-      </>
-    );
+    return <>{children}</>;
   }
 
   return (

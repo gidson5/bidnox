@@ -113,9 +113,20 @@ export const Header = () => {
                     if (classHash) setIsDeployed(true);
                     else setIsDeployed(false);
                 })
-                .catch((e) => {
-                    console.error("contract check", e);
-                    if (e.toString().includes("Contract not found")) {
+                .catch((e: any) => {
+                    // Check if error is "Contract not found" - this is expected for accounts
+                    const errorMessage = String(e?.message || e || "");
+                    const isContractNotFound =
+                        errorMessage.includes("Contract not found") ||
+                        errorMessage.includes("not found") ||
+                        e?.code === 20;
+
+                    if (isContractNotFound) {
+                        // Account is not a contract, which is fine
+                        setIsDeployed(false);
+                    } else {
+                        // Only log unexpected errors
+                        console.error("contract check", e);
                         setIsDeployed(false);
                     }
                 });
