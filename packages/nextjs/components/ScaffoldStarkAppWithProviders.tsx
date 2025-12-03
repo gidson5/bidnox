@@ -7,6 +7,7 @@ import { StarknetConfig, starkscan } from "@starknet-react/core";
 
 import { Header } from "~~/components/Header";
 import { WalletGate } from "~~/components/WalletGate";
+import { ErrorHandler } from "~~/components/ErrorHandler";
 import { appChains, connectors } from "~~/services/web3/connectors";
 import provider from "~~/services/web3/provider";
 
@@ -44,15 +45,18 @@ export const ScaffoldStarkAppWithProviders = ({
     if (!mounted) return null;
 
     return (
-        <StarknetConfig
-            chains={appChains}
-            provider={provider}
-            connectors={connectors}
-            explorer={starkscan}
-        >
-            <ScaffoldStarkApp>
-                <WalletGate>{children}</WalletGate>
-            </ScaffoldStarkApp>
-        </StarknetConfig>
+        <>
+            <ErrorHandler />
+            <StarknetConfig
+                chains={appChains}
+                provider={provider}
+                connectors={connectors}
+                explorer={starkscan}
+            >
+                <ScaffoldStarkApp>
+                    <WalletGate>{children}</WalletGate>
+                </ScaffoldStarkApp>
+            </StarknetConfig>
+        </>
     );
 };
