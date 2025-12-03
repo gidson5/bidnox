@@ -85,95 +85,93 @@ export const useFetchAddressDetails = (address?: Address | string) => {
         isLoading: false,
       };
 
+      // Try to get class hash (indicates this is a deployed contract)
+      let contractAbi;
+      let classHash;
+
       try {
-        // Try to get class hash (indicates this is a deployed contract)
-        let contractAbi;
-        let classHash;
+        const classResponse = await provider.getClassAt(address);
+        contractAbi = classResponse.abi;
+      } catch (getClassError: any) {
+        // Contract might not exist or might not be a contract
+        const errorMessage = String(getClassError?.message || getClassError || "");
+        if (
+          errorMessage.includes("Contract not found") ||
+          errorMessage.includes("not found") ||
+          getClassError?.code === 20
+        ) {
+          // Contract doesn't exist - treat as account
+          addressDetails.type = "ACCOUNT";
+          return addressDetails;
+        }
+        throw getClassError;
+      }
+
+      try {
+        classHash = await provider.getClassHashAt(address);
+      } catch (classHashError: any) {
+        // If we can't get class hash, check if it's a "not found" error
+        const errorMessage = String(classHashError?.message || classHashError || "");
+        if (
+          errorMessage.includes("Contract not found") ||
+          errorMessage.includes("not found") ||
+          classHashError?.code === 20
+        ) {
+          addressDetails.type = "ACCOUNT";
+          return addressDetails;
+        }
+        throw classHashError;
+      }
+
+      if (classHash && classHash !== "0x0") {
+        addressDetails.classHash = classHash;
 
         try {
-          const classResponse = await provider.getClassAt(address);
-          contractAbi = classResponse.abi;
-        } catch (getClassError: any) {
-          // Contract might not exist or might not be a contract
-          const errorMessage = String(getClassError?.message || getClassError || "");
-          if (
-            errorMessage.includes("Contract not found") ||
-            errorMessage.includes("not found") ||
-            getClassError?.code === 20
-          ) {
-            // Contract doesn't exist - treat as account
-            addressDetails.type = "ACCOUNT";
-            return addressDetails;
-          }
-          throw getClassError;
-        }
-
-        try {
-          classHash = await provider.getClassHashAt(address);
-        } catch (classHashError: any) {
-          // If we can't get class hash, check if it's a "not found" error
-          const errorMessage = String(classHashError?.message || classHashError || "");
-          if (
-            errorMessage.includes("Contract not found") ||
-            errorMessage.includes("not found") ||
-            classHashError?.code === 20
-          ) {
-            addressDetails.type = "ACCOUNT";
-            return addressDetails;
-          }
-          throw classHashError;
-        }
-
-        if (classHash && classHash !== "0x0") {
-          addressDetails.classHash = classHash;
-
-          try {
-            // Determine if it's Cairo 1.0 or Cairo 2.0 based on the class structure
-            if (contractAbi && typeof contractAbi === "object") {
-              const version = (await provider.getContractVersion(address))
-                .cairo;
-              addressDetails.classVersion = `Cairo ${version}`;
-              addressDetails.type = "CONTRACT";
-            }
-          } catch (classError) {
-            console.warn("Could not fetch class details:", classError);
-            addressDetails.classVersion = "Unknown";
+          // Determine if it's Cairo 1.0 or Cairo 2.0 based on the class structure
+          if (contractAbi && typeof contractAbi === "object") {
+            const version = (await provider.getContractVersion(address))
+              .cairo;
+            addressDetails.classVersion = `Cairo ${version}`;
             addressDetails.type = "CONTRACT";
           }
-
-          // For now, set deployed by as the same address since we don't have deployment transaction info
-          addressDetails.deployedByContractAddress = address;
-
-          const deploymentInfo = await getContractDeployerAndHash(
-            address as Address,
-            provider,
-          );
-          addressDetails.deployedAtTransactionHash = deploymentInfo?.hash;
-          addressDetails.deployedByContractAddress = deploymentInfo?.deployer;
-          addressDetails.deployedAt = await (async () => {
-            try {
-              const blockIdentifier = deploymentInfo?.blockNumber;
-              if (blockIdentifier) {
-                const block = await provider.getBlock(blockIdentifier);
-                return new Date(block.timestamp * 1000).toLocaleDateString(
-                  "en-US",
-                  {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  },
-                );
-              }
-              return undefined;
-            } catch (error) {
-              console.warn("Could not fetch block timestamp:", error);
-              return undefined;
-            }
-          })();
-        } else {
-          // Address exists but no class hash - likely an externally owned account or undeployed
-          addressDetails.type = "ACCOUNT";
+        } catch (classError) {
+          console.warn("Could not fetch class details:", classError);
+          addressDetails.classVersion = "Unknown";
+          addressDetails.type = "CONTRACT";
         }
+
+        // For now, set deployed by as the same address since we don't have deployment transaction info
+        addressDetails.deployedByContractAddress = address;
+
+        const deploymentInfo = await getContractDeployerAndHash(
+          address as Address,
+          provider,
+        );
+        addressDetails.deployedAtTransactionHash = deploymentInfo?.hash;
+        addressDetails.deployedByContractAddress = deploymentInfo?.deployer;
+        addressDetails.deployedAt = await (async () => {
+          try {
+            const blockIdentifier = deploymentInfo?.blockNumber;
+            if (blockIdentifier) {
+              const block = await provider.getBlock(blockIdentifier);
+              return new Date(block.timestamp * 1000).toLocaleDateString(
+                "en-US",
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                },
+              );
+            }
+            return undefined;
+          } catch (error) {
+            console.warn("Could not fetch block timestamp:", error);
+            return undefined;
+          }
+        })();
+      } else {
+        // Address exists but no class hash - likely an externally owned account or undeployed
+        addressDetails.type = "ACCOUNT";
       }
 
       return addressDetails;
