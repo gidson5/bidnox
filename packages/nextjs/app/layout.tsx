@@ -4,23 +4,23 @@ import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 
 export const metadata: Metadata = {
-  title: "Scaffold-Stark",
-  description: "Fast track your starknet journey",
-  icons: "/logo.ico",
+    title: "BidNox",
+    description: "Auction platform on the Starknet network",
+    icons: "/logo-app.ico",
 };
 
 const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <html suppressHydrationWarning>
-      <body suppressHydrationWarning>
-        <ThemeProvider enableSystem>
-          <ScaffoldStarkAppWithProviders>
-            {children}
-          </ScaffoldStarkAppWithProviders>
-        </ThemeProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html suppressHydrationWarning>
+            <body suppressHydrationWarning>
+                <ThemeProvider enableSystem>
+                    <ScaffoldStarkAppWithProviders>
+                        {children}
+                    </ScaffoldStarkAppWithProviders>
+                </ThemeProvider>
+            </body>
+        </html>
+    );
 };
 
 export default ScaffoldStarkApp;
