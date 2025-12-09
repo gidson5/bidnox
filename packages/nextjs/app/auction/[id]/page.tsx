@@ -22,14 +22,32 @@ export default function AuctionDetailPage() {
     const [bidAmount, setBidAmount] = useState("");
     const [bidError, setBidError] = useState<string | null>(null);
 
-    // Validate auction ID
-    let auctionId: bigint;
+    // All hooks must be called at the top level, before any conditional returns
+    const { address } = useAccount();
+    
+    // Validate auction ID - use 0n as default if invalid (hooks will handle it)
+    let auctionId: bigint = 0n;
+    let isInvalidAuctionId = false;
     try {
         if (!auctionIdString || auctionIdString.trim() === "") {
-            throw new Error("Invalid auction ID");
+            isInvalidAuctionId = true;
+        } else {
+            auctionId = BigInt(auctionIdString);
         }
-        auctionId = BigInt(auctionIdString);
     } catch (error) {
+        isInvalidAuctionId = true;
+    }
+
+    // Call hooks with auctionId (will be 0n if invalid, hooks should handle gracefully)
+    const {
+        auction: auctionData,
+        userBid: userBidData,
+        isLoading,
+    } = useAuctionDetails(auctionId);
+    const { placeBid, isPending: isPlacingBidHook } = usePlaceBid(auctionId);
+
+    // Show error UI if auction ID is invalid (after hooks are called)
+    if (isInvalidAuctionId) {
         return (
             <div className="min-h-screen bg-gray-900">
                 <div className="container mx-auto px-6 py-8 text-center">
@@ -49,14 +67,6 @@ export default function AuctionDetailPage() {
             </div>
         );
     }
-
-    const { address } = useAccount();
-    const {
-        auction: auctionData,
-        userBid: userBidData,
-        isLoading,
-    } = useAuctionDetails(auctionId);
-    const { placeBid, isPending: isPlacingBidHook } = usePlaceBid(auctionId);
 
     if (isLoading) {
         return (
@@ -163,7 +173,7 @@ export default function AuctionDetailPage() {
                 // Optionally show success message or refresh data
                 console.log("Bid placed successfully!");
             } else {
-                setBidError(result.error?.message || "Failed to place bid");
+                setBidError(result.error || "Failed to place bid");
             }
         } catch (error: any) {
             console.error("Failed to place bid:", error);

@@ -77,7 +77,8 @@ export const usePlaceBid = (auctionId: bigint) => {
             return { success: true };
         } catch (error) {
             console.error("Error placing bid:", error);
-            return { success: false, error };
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            return { success: false, error: errorMessage };
         }
     };
 
