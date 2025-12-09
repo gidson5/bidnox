@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ScaffoldStarkAppWithProviders } from "~~/components/ScaffoldStarkAppWithProviders";
+import { SuppressEthereumError } from "~~/components/SuppressEthereumError";
 import "~~/styles/globals.css";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 
@@ -13,6 +14,7 @@ const ScaffoldStarkApp = ({ children }: { children: React.ReactNode }) => {
     return (
         <html suppressHydrationWarning>
             <body suppressHydrationWarning>
+                <SuppressEthereumError />
                 <ThemeProvider enableSystem>
                     <ScaffoldStarkAppWithProviders>
                         {children}

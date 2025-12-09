@@ -29,16 +29,42 @@ export const formatTimeRemaining = (endTime: bigint): string => {
 };
 
 export const getAuctionStatus = (
-    endTime: bigint,
-    finalized: boolean,
-    cancelled: boolean
+    endTime: bigint | number | undefined | null,
+    finalized: boolean | undefined | null,
+    cancelled: boolean | undefined | null
 ): "active" | "ended" | "finalized" | "cancelled" => {
-    if (cancelled) return "cancelled";
-    if (finalized) return "finalized";
+    // Handle null/undefined values
+    if (cancelled === true) return "cancelled";
+    if (finalized === true) return "finalized";
+
+    // If endTime is missing or invalid, default to ended
+    if (!endTime || endTime === 0n || endTime === 0) {
+        if (process.env.NODE_ENV === "development") {
+            console.warn("[getAuctionStatus] Invalid endTime:", endTime);
+        }
+        return "ended";
+    }
 
     const now = Math.floor(Date.now() / 1000);
-    const end = Number(endTime);
+    // Convert endTime to number (handles both bigint and number)
+    const end = typeof endTime === "bigint" ? Number(endTime) : endTime;
 
+    // Debug logging in development
+    if (process.env.NODE_ENV === "development") {
+        console.log("[getAuctionStatus] Time comparison:", {
+            now,
+            end,
+            nowType: typeof now,
+            endType: typeof end,
+            endTimeOriginal: endTime,
+            endTimeOriginalType: typeof endTime,
+            isActive: now < end,
+            difference: end - now,
+            differenceInHours: (end - now) / 3600,
+        });
+    }
+
+    // Check if end time is in the future (auction is active)
     return now < end ? "active" : "ended";
 };
 
