@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useAccount } from "@starknet-react/core";
 import { CustomConnectButton } from "~~/components/scaffold-stark";
 import { useCreateAuction } from "~~/hooks/auction";
-import { validateAuctionForm, durationToSeconds } from "~~/utils/auction";
+import { validateAuctionForm } from "~~/utils/auction";
 import { useDeployedContractInfo } from "~~/hooks/scaffold-stark";
 import { useTargetNetwork } from "~~/hooks/scaffold-stark/useTargetNetwork";
 import { notification } from "~~/utils/scaffold-stark";
@@ -133,23 +133,13 @@ export default function CreateAuctionPage() {
 
             console.log("\n[STEP 7] Parsing Duration...");
             try {
-                const durationHours = Number(formData.duration);
-                console.log("  → Duration in hours:", durationHours);
+                durationNumber = Number(formData.duration);
+                console.log("  → Duration as number:", durationNumber);
 
-                if (isNaN(durationHours) || durationHours <= 0) {
+                if (isNaN(durationNumber) || durationNumber <= 0) {
                     throw new Error("Invalid duration value");
                 }
-
-                // Convert hours to seconds (contract expects duration in seconds)
-                durationNumber = durationToSeconds(durationHours, "hours");
-                console.log("  ✅ Duration converted to seconds:", durationNumber);
-                console.log(
-                    "     (",
-                    durationHours,
-                    "hours =",
-                    durationNumber,
-                    "seconds )"
-                );
+                console.log("  ✅ Duration parsed:", durationNumber, "seconds");
             } catch (e) {
                 console.error("  ❌ Failed to parse duration:", e);
                 alert("Invalid duration. Please select a valid option.");
